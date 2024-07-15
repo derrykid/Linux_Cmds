@@ -7,7 +7,9 @@ Basic form
 grep "string" fileName
 ```
 
-- `-i` flag for *insensitive*
+- `-i` case insensitive
+- `-H` prints the file name
+- `-v` invert the search
 
 ## Search for a single file
 
