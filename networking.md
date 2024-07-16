@@ -156,8 +156,8 @@ Network Address: 192.168.1.0 (Network portion: 192.168.1, Host portion: 0)
 The special address is reserved for purposes. E.g. loopback netowrk, router address, and broadcast address.
 
 - Network address at `0`: represent entire network
+- Router / gateway address at `1`: typically assigned to the first or last usable address in the subnet. It manages the traffic passing between network. such as traffic between private network and public network.
 - Broadcast address at `255`: the last address in the range. It's used to transmit to all host devices.
-- Router / gateway address: typically assigned to the first or last usable address in the subnet. It manages the traffic passing between network. such as traffic between private network and public network.
 
 ##### Network address
 
@@ -175,6 +175,84 @@ For example, `192.168.1.10/24` indicates that the first 24 bits of the IP addres
 
 - `/etc/hosts` for local DNS
 - `/etc/resolv.conf` for DNS config
+
+### IPv4 classes and ranges
+
+There are 5 classes of 32-bit IP addresses. The value of first octet determines the class:
+
+- class A: leading 0, range `1.0.0.0 to 127.255.255.255`
+    - private address `10.0.0.0 to 10.255.255.255`
+- class B: leading 10, range `128.0.0.0 to 191.255.0.0`
+    - private address `172.16.0.0 to 172.31.255.255`
+- class C: leading 110, range `192.0.0.0 to 223.255.255.255`
+    - private address `192.168.0.0 to 192.168.255.255`
+- class D: leading 1110, range `224.0.0.0 to 239.255.255.255`
+- class E: leading 1111 , range `240.0.0.0 to 254.255.255.255`, reserved for experimental purposes
+
+- loopback, in range of class A, `127.0.0.1 to 127.255.255.254`
+
+Leading 0 means in binary format: `0xxxxxxx.xxxxxxxx.xxxxxxxx.xxxxxxxx`
+
+### IPv6 addresses
+
+- IPv6 uses hexadecimal
+- 8 sets of (four hex digits)
+- consists of two (64-bit parts)
+
+```
+2001:0db8:85a3:0000:0000:8a2e:0370:7334
+```
+
+You can compress the IPv6. 2 rules apply:
+
+1. Leading zero compression: `0800 -> 800`, `0000 -> 0`
+2. Zero compression: **Only use one time** for consecutive zeros, replaced with `::`. e.g. `2001:DB8:800:2:0:0:0:C -> 2001:DB8:800:2::C`
+
+### Netmask / subnet mask
+
+It is a type of netmask used to *partition a larger network into smaller subnets.* 
+
+It works similarly by indicating:
+- network portion
+- host portion
+
+Example of 16 bits subnet mask
+```
+network   host
+|     | |     |
+xxx.xxx.xxx.xxx
+```
+
+You can set the network portion with 8, 16, 24 bits. 
+
+With subnet mask of `255.0.0.0`, the leftmost 8 bits `255` is the network ID, it's fixed. 
+
+#### CIDR notation
+
+Classless Inter-Domain Routing (CIDR) notation is an alternative way to specify a subnet mask, using a suffix that indicates the number of network bits.
+
+Example: `192.168.1.10/24`
+
+The `/24` indicates that the first 24 bits are the network portion, equivalent to the subnet mask `255.255.255.0.`
+
+It's also common to indicate numbers like `/21, /22` or any other number. It's more convenient way to note the subnet mask than traditional way.
+
+| CIDR Notation | Subnet Mask         | Number of IP Addresses |
+|---------------|---------------------|------------------------|
+| /16           | 255.255.0.0         | 65,536                 |
+| /17           | 255.255.128.0       | 32,768                 |
+| /18           | 255.255.192.0       | 16,384                 |
+| /19           | 255.255.224.0       | 8,192                  |
+| /20           | 255.255.240.0       | 4,096                  |
+| /21           | 255.255.248.0       | 2,048                  |
+| /22           | 255.255.252.0       | 1,024                  |
+| /23           | 255.255.254.0       | 512                    |
+| /24           | 255.255.255.0       | 256                    |
+| /25           | 255.255.255.128     | 128                    |
+| /26           | 255.255.255.192     | 64                     |
+| /27           | 255.255.255.224     | 32                     |
+| /28           | 255.255.255.240     | 16                     |
+
 
 ## Tools
 
@@ -239,3 +317,27 @@ Use to check onnectivity at multiple layers of the OSI model depending on which 
 ### `tcpdump`
 
 Captures and analyzes network packets. Useful for deep network traffic analysis and troubleshooting complex network issues.
+
+### `ip route show` for route tables
+
+```bash
+1: default via 172.24.0.1 dev wlp0s20f3 proto dhcp src 172.24.66.3 metric 600 
+2: 172.24.0.0/17 dev wlp0s20f3 proto kernel scope link src 172.24.66.3 metric 600 
+```
+For entry 1:
+- `default via 172.24.0.1`: the default gateway/router IP. It's where the packets are sent to for outside LAN. It can be internet or other subnet.
+- `dev wlp0s20f3`: the network interface for this route.
+- `proto dhcp`: Indicates this route was config via DHCP
+- `src 172.24.66.3`: source IP address assigned to the interface, which in my machine.
+- `metric 600`: used for algo to find best route
+
+---
+For entry 2:
+- `172.24.0.0/17`: indicates the size of the subnet
+- `proto kernal`: indicates this route was config by kernal
+- `src 172.24.66.3`: source IP address for this route
+
+---
+Based on output, the default gateway IP address is `172.24.0.1`. This means that any packets that are destined for IP addresses outside of your local subnet `172.24.0.0/17` will be sent to this gateway.
+
+**Note:** See there's no switch here because switch works on MAC address, it's layer 2. IP address is layer 3.
