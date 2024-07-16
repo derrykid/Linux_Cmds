@@ -49,6 +49,8 @@ Router acts as a dispatcher. It decides which way to send packet of data. It's l
 
 ## Network models
 
+- A *hop* is the step from one network segment to the next. 
+
 ### OSI model
 
 ```
@@ -69,7 +71,7 @@ Going down the stack calls **encapslation**. Going up the stack calls **decapsla
 
 - Session layer: Manages sessions between applications, maintaining and terminating connections.
 
-- Transport layer: Provides reliable data transfer between end systems. It ensures complete data transfer with error recovery and flow control. It has port address: src port address and des port address. **The layer says to application: ok which application has this data?** Protocols that defines segment: TCP, UDP. 
+- Transport layer: Create datagrams and segments. Provides reliable data transfer between end systems. It ensures complete data transfer with error recovery and flow control. It has port address: src port address and des port address. **The layer says to application: ok which application has this data?** Protocols that defines segment: TCP, UDP.
 
 - Network layer: Responsible for data transfer between different networks. It handles logical addressing, routing and packet forwarding. **Creates packet from segment.** It has IP addresses, the source IP address on network, and destination IP address. **IP, ICMP, OSPF is this layer.** 
 
@@ -84,14 +86,14 @@ Going down the stack calls **encapslation**. Going up the stack calls **decapsla
 -----------------------------------------
 7. Application  |                       |
 6. Presentation |  Application layer    | create PDU
-5. Session      |                       |
+5. Session      |                       | (known as software layer)
 -----------------------------------------
 4. Transport    |  Transport layer      | (create segment)
 -----------------------------------------
 3. Network      |  Internet layer       | (create packet)
 -----------------------------------------
-2. Data link    |                       |
-1. Physical     |  Network access layer | (create frame)
+2. Data link    |                       | (create frame)
+1. Physical     |  Network access layer | 
 -----------------------------------------
 ```
 
