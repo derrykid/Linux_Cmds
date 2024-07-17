@@ -7,7 +7,7 @@
 
 ## Network device
 
-[hub vs switch vs router video](https://www.youtube.com/watch?v=1z0ULvg_pW8) <++>
+[hub vs switch vs router video](https://www.youtube.com/watch?v=1z0ULvg_pW8)
 
 ![router switch and hub](https://media.router-switch.com/media/wysiwyg/Help-Center-FAQ/Router/hub-in-networking.jpg) 
 
@@ -45,6 +45,39 @@ Computing devices connect to a switch by network interface card and cable.
 It connects multiple switches. It enables connection between different network.
 
 Router acts as a dispatcher. It decides which way to send packet of data. It's located at any gateway where one network meets another.
+
+## Connections
+
+### TCP three way handshake
+
+![three way handshake](https://www.johnpfernandes.com/wp-content/uploads/2018/12/120818_0035_TheTCP3Wayh1.png) 
+
+1. SYN (Synchronize):
+
+- The client sends a TCP packet with the SYN (synchronize) flag set to the server to initiate a connection.
+- This packet includes an initial sequence number (ISN) chosen by the client.
+
+2. SYN-ACK (Synchronize-Acknowledge):
+
+- The server responds with a TCP packet that has both the SYN and ACK (acknowledge) flags set.
+- The SYN flag is set to indicate the server’s readiness to synchronize.
+- The ACK flag acknowledges the client’s SYN packet by setting the acknowledgment number to the client’s ISN + 1.
+
+3. ACK (Acknowledge):
+
+- The client sends a final TCP packet with the ACK flag set.
+
+By the end of the three-way handshake, the TCP connection is established.
+
+### TCP vs UDP
+
+|                     | TCP                   | UDP                      |
+|---------------------|-----------------------|--------------------------|
+| **Connection Type** | Connection-oriented   | Connectionless           |
+| **Usage**           | Reliable data delivery| Unreliable data delivery |
+| **Common Protocols**| HTTP, FTP, SMTP       | DNS, DHCP, SNMP          |
+| **Speed**           | Slower due to overhead| Faster, minimal overhead |
+| **Reliability**     | Reliable              | No guarantee of delivery, no sequencing |
 
 
 ## Network models
@@ -252,6 +285,69 @@ It's also common to indicate numbers like `/21, /22` or any other number. It's m
 | /26           | 255.255.255.192     | 64                     |
 | /27           | 255.255.255.224     | 32                     |
 | /28           | 255.255.255.240     | 16                     |
+
+
+### Ports
+
+| Port Range       | Description              | Port Numbers         |
+|------------------|--------------------------|----------------------|
+| System Ports     | Well-known ports         | 0 - 1023             |
+| User Ports       | Registered ports         | 1024 - 49151         |
+| Dynamic Ports    | Private/ephemeral ports  | 49152 - 65535        |
+
+#### Common system ports
+
+| Protocol | Port Number | Application/Service    |
+|----------|-------------|------------------------|
+| TCP/UDP  | 20          | FTP (Data Transfer)    |
+| TCP/UDP  | 21          | FTP (Control)          |
+| TCP      | 22          | SSH                    |
+| TCP      | 23          | Telnet                 |
+| TCP/UDP  | 25          | SMTP                   |
+| TCP/UDP  | 53          | DNS                    |
+| TCP      | 80          | HTTP                   |
+| TCP      | 110         | POP3                   |
+| TCP      | 143         | IMAP                   |
+| TCP      | 443         | HTTPS                  |
+| TCP      | 465         | SMTPS                  |
+| TCP      | 587         | SMTP (Submission)      |
+| TCP      | 993         | IMAPS                  |
+| TCP      | 995         | POP3S                  |
+| TCP/UDP  | 161         | SNMP                   |
+| TCP/UDP  | 389         | LDAP                   |
+| TCP/UDP  | 514         | Syslog                 |
+| TCP      | 587         | SMTP (Mail Submission) |
+| UDP      | 636         | LDAPS                  |
+
+#### Common user ports
+
+| Protocol | Port Number | Application/Service             |
+|----------|-------------|---------------------------------|
+| TCP/UDP  | 1433        | Microsoft SQL Server            |
+| TCP      | 3306        | MySQL                           |
+| TCP      | 3389        | Remote Desktop Protocol         |
+| TCP      | 5432        | PostgreSQL                      |
+| TCP      | 5900        | VNC (Virtual Network Computing) |
+| TCP/UDP  | 8080        | HTTP Alternate                  |
+| TCP      | 8443        | HTTPS Alternate                 |
+| TCP      | 11211       | Memcached                       |
+| TCP      | 27017       | MongoDB                         |
+| TCP      | 6379        | Redis                           |
+| TCP      | 24800       | OpenVPN                         |
+| UDP      | 1194        | OpenVPN                         |
+| TCP/UDP  | 8081        | HTTP Proxy                      |
+| TCP      | 9418        | Git                             |
+| TCP      | 27015       | Steam (Valve game servers)      |
+| TCP/UDP  | 25565       | Minecraft                       |
+
+
+### TCP Sockets
+
+The combination of IP address and a port number **is called a socket.** 
+
+Example: `192.168.10.1:80`
+
+A socket can be used for multiple connections, e.g. a web server can serve manay connections.
 
 
 ## Tools
