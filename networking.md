@@ -1,6 +1,6 @@
 [toc]
 
-## Type of network
+## Type of network area
 
 - LAN: local area network. Limited geographical area e.g. floor, building.
 - WAN: Wide area network. large geographical area. e.g. cities, countries.
@@ -19,7 +19,7 @@
 
 When data packet arrives in the hub. **the hub broadcasts it to every device on the network.** 
 
-It keeps a table but it only knows which port is currently in use. It 
+It is a simple device that broadcasts incoming data to all ports.
 
 
 ### switch
@@ -45,6 +45,20 @@ Computing devices connect to a switch by network interface card and cable.
 It connects multiple switches. It enables connection between different network.
 
 Router acts as a dispatcher. It decides which way to send packet of data. It's located at any gateway where one network meets another.
+
+### Network address translator (NAT)
+
+Since there's only limited IP address, we use NAT to translate private IP to public IP.
+
+When the device wants to access the internet, the NAT will translate its private IP address to public IP address. It works when it goes out and when it receives it back.
+
+---
+
+With limitation of available IP address, there is a device called **Network address port translator (NAPT).** 
+
+- When the router translate the source IP address to public IP address, it translate the port to an available port that it assigns. 
+- The port can be different port. 
+- When it data comes back, NAPT will translate it back.
 
 ## Connections
 
@@ -130,7 +144,21 @@ Going down the stack calls **encapslation**. Going up the stack calls **decapsla
 -----------------------------------------
 ```
 
+### Port forwarding
+
+A border router (or firewall) performs. Its purpose is to direct traffic that comes into a specific port on public interface, and forward it to its private network. 
+
+It this way, private network can be available to the public network. 
+
+The port number can be different on public and private.
+
+e.g. Nginx can be one port forwarding example, it's a reverse proxy though.
+
 ## Network interface
+
+A network interface is the point of interconnection between a computer and a private or public network. 
+
+It can be a physical device or a software-defined entity. Each network interface is assigned a unique Media Access Control (MAC) address that serves as a hardware identifier for the network card.
 
 By default, most Linux servers has 2 network interfaces, which are sometimes referred to as network interface card (NIC) or network adapter:
 
@@ -148,6 +176,30 @@ $ ip a
     ...
 ```
 
+### Dynamic Host configuration protocol (DHCP)
+
+DHCP enables automatic IP address config for almost all devices by exchanging messages between device and DHCP server.
+
+It can auto config params e.g. default gateway address, DNS server IP, or subnet mask.
+
+Uses lease time to dynamically assign IP addresses. When an IP is no longer used, it goes back to IP pool.
+
+---
+
+When a device wants a IP address, followings are happened:
+
+1. **Discover**: When device turns on, it broadcast a message (or DHCP discover message) over the network by port 67. In message, there's MAC. It does not pass router.
+
+2. **Offer**: When receive the message, it sends back a broadcast message that contains the IP address by port 68. It contains network IP address, and the subnet mask.
+
+3. **Request**: After the device/client receives the DHCP offer, it sends a DHCP request through a broadcast to DHCP server. It contains server's IP address and the offered IP address.
+
+4. **Acknowledgment**: DHCP server sends back a acknowledgment. It states that the device has leased the particular IP. It has subnet mask, IP address of DNS server, default gateway, and the lease time.
+
+---
+
+- UDP Port 67: DHCP server listens on this port for client requests (DHCP Discover messages).
+- UDP Port 68: DHCP client listens on this port for server responses (DHCP Offer, DHCP Acknowledge messages).
 ## Network address
 
 - IPv4: 32-bit
@@ -192,24 +244,21 @@ The special address is reserved for purposes. E.g. loopback netowrk, router addr
 - Router / gateway address at `1`: typically assigned to the first or last usable address in the subnet. It manages the traffic passing between network. such as traffic between private network and public network.
 - Broadcast address at `255`: the last address in the range. It's used to transmit to all host devices.
 
-##### Network address
+##### Base address / Network address
 
 It's the address that **represents the network itself, not any individual device.**
 
 For example, for the IP address `192.168.1.1` with a subnet mask of `255.255.255.0`, the network address is `192.168.1.0`.
 
-#### CIDR Notation
+#### Acquire IPv4 address in private network
 
-An alternative way to represent subnet masks, e.g., `/24` instead of `255.255.255.0.`
+When a devcie wants to connect to a network, it needs IP address. It's done by **DHCP.** 
 
-For example, `192.168.1.10/24` indicates that the first 24 bits of the IP address are the network portion. This is equivalent to the subnet mask `255.255.255.0.`
+To do this: see DHCP
 
-### Config files
 
-- `/etc/hosts` for local DNS
-- `/etc/resolv.conf` for DNS config
 
-### IPv4 classes and ranges
+#### IPv4 classes and ranges
 
 There are 5 classes of 32-bit IP addresses. The value of first octet determines the class:
 
@@ -225,6 +274,19 @@ There are 5 classes of 32-bit IP addresses. The value of first octet determines 
 - loopback, in range of class A, `127.0.0.1 to 127.255.255.254`
 
 Leading 0 means in binary format: `0xxxxxxx.xxxxxxxx.xxxxxxxx.xxxxxxxx`
+
+##### Reserved IPv4 address
+
+Private IP Address Ranges (IPv4)
+- Class A: `10.0.0.0 - 10.255.255.255` (CIDR: 10.0.0.0/8)
+- Class B: `172.16.0.0 - 172.31.255.255` (CIDR: 172.16.0.0/12)
+- Class C: `192.168.0.0 - 192.168.255.255` (CIDR: 192.168.0.0/16)
+Other Reserved IP Ranges
+- Loopback: `127.0.0.0 - 127.255.255.255` (Used for local loopback addresses)
+- Link-Local: `169.254.0.0 - 169.254.255.255` (Used for automatic private IP addressing)
+- Multicast: `224.0.0.0 - 239.255.255.255` (Used for multicast groups)
+- Reserved for Future Use: `240.0.0.0 - 255.255.255.254`
+- Broadcast: `255.255.255.255` (Used for network broadcast messages)
 
 ### IPv6 addresses
 
@@ -285,6 +347,20 @@ It's also common to indicate numbers like `/21, /22` or any other number. It's m
 | /26           | 255.255.255.192     | 64                     |
 | /27           | 255.255.255.224     | 32                     |
 | /28           | 255.255.255.240     | 16                     |
+
+#### Should not reserved public IP
+
+Typically, you can assigned public IP space in the subnet. However, it will create conflict with the public IP address. It's not recommended.
+
+In a private network, you should use the reserved private IP address ranges, such as:
+
+```
+10.0.0.0/8
+172.16.0.0/12
+192.168.0.0/16
+```
+
+These ranges are specifically reserved for private use and will not conflict with public IP addresses.
 
 
 ### Ports
@@ -350,6 +426,31 @@ Example: `192.168.10.1:80`
 A socket can be used for multiple connections, e.g. a web server can serve manay connections.
 
 
+
+### Service config by DHCP
+
+The DHCP offer broadcast that is sent to the devices:
+
+- Subnet mask
+- default gateway
+- DNS server IP
+
+
+## Vitural private cloud
+
+- VPC is like a data centre. It is isolated from other vitual networks. 
+
+- Resources within VPC can communicate with each other through private IP. 
+
+- If resource in VPC wants to communicate with internet, VPC will need network resources, e.g. **internet gateway and route table** to reach public internet.
+
+- CIDR block is a range of private IP that is used within the VPC to specific a subnet.
+
+## DNS Config files
+
+- `/etc/hosts` for local DNS
+- `/etc/resolv.conf` for DNS config
+
 ## Tools
 
 - `nmap` 
@@ -406,10 +507,6 @@ It uses the Internet Control Message Protocol (ICMP), which is a part of the Net
 
 ICMP is used for sending error messages and operational information, such as when a service is unavailable or when a router cannot be reached.
 
-### `netstat`
-
-Use to check onnectivity at multiple layers of the OSI model depending on which of the options are used with the command.
-
 ### `tcpdump`
 
 Captures and analyzes network packets. Useful for deep network traffic analysis and troubleshooting complex network issues.
@@ -437,3 +534,40 @@ For entry 2:
 Based on output, the default gateway IP address is `172.24.0.1`. This means that any packets that are destined for IP addresses outside of your local subnet `172.24.0.0/17` will be sent to this gateway.
 
 **Note:** See there's no switch here because switch works on MAC address, it's layer 2. IP address is layer 3.
+
+### `nmcli` to display network information
+
+It shows general info about IP address, gateway, router
+```
+nmcli dev show
+```
+
+See the DNS server IP
+```
+nmcli dev show | grep DNS
+```
+
+### `netstat`
+
+displaying network connections, routing tables, interface statistics, masquerade connections
+
+It's deprecated in many Linux distro in favor of `ss`
+
+### `ss` for socket statistics
+
+```
+# show all active connections
+ss -a
+
+# show listening ports
+ss -l
+
+# network stats
+ss -s
+
+# tcp connection
+ss -t
+
+# udp
+ss -u
+```
