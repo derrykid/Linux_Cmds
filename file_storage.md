@@ -23,6 +23,14 @@ It divides data into fixed-size blocks. This can be attached by using *Storage A
 
 - Use case: Database, SQL, noSQL, add a file system on it can also do
 
+### Instance store
+
+Instance store provides temporary block level storage for EC2. This storage located on disks. It physically attaches to the host computer. 
+
+Ideal for:
+- temporary data: buffers, caches, scratch data
+- load balanced pool of web servers
+
 ## Object 
 
 Some types of static data, e.g. image and video. It can save metadata for user access. AWS S3 is this.
