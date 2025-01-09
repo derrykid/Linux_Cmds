@@ -28,13 +28,14 @@ kill session
 
 ## Window management
 
-- create new window : `C-b c`
-- split the window horizontally: `C-b %`
-- split vertically : `C-b "`
-- rename the window - `C-b ,`
+- Current window management
+    - split the window horizontally: `C-b %`
+    - split vertically : `C-b "`
+- Create new window : `C-b c`
+- Rename the window - `C-b ,`
 - kill the window - `C-b &`
 
-## Change window
+## Navigate through the windows
 
 - `C-b 0` change window to window 0. 
 - `C-b '` prompts for a window index and change to that
