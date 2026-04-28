@@ -1,6 +1,6 @@
 # Start tmux
 - Create session - `tmux` or `tmux new`
-    - With a session name: `tmux -s <name>`
+    - With a session name: `tmux new -s <name>`
 
 - Name the first window - `tmux new -n mytopwindow top`
 - detach from the session - `C-b d`
