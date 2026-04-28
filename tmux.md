@@ -37,6 +37,7 @@ kill session
 
 ## Navigate through the windows
 
+- `C-b w` list all windows and select
 - `C-b 0` change window to window 0. 
 - `C-b '` prompts for a window index and change to that
 - `C-b n` to next window
