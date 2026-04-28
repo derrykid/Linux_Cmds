@@ -56,3 +56,8 @@ Or use `C-b q` to print the pane numbers. Then `C-b q 1` to the #1, `C-b q 2` to
 
 - `C-b s` list sessions
 - `C-b w` list windows
+
+
+## If in the terminal and want to navigate
+
+- `C-b [` to enter copy mode, then use arrow keys or cursor to scroll. `q` to exit.
